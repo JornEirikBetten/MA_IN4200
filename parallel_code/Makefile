@@ -2,7 +2,7 @@ CC = mpicc
 CFLAGS = -O2
 LDFLAGS = -L../simple-jpeg/ -lsimplejpeg
 
-PROJ = a.out
+PROJ = main
 OBJS = main.o
 
 all: simple-jpeg $(PROJ)
