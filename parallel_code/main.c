@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     output_jpeg_filename = argv[4];
     /* reading image into 1D array */
     import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
-    printf("M: %d, N: %d\n", m,n); 
+    printf("M: %d, N: %d\n", m,n);
     /* allocating an image with 2D float array inside */
     //allocate_image (&whole_image, m, n);
   }
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
   MPI_Cart_shift(comm_cart, 1, 1, &rank_dirs[LEFT], &rank_dirs[RIGHT]);
   printf("P[%d]: neighbors(u,d,l,r)=%d %d %d %d\n",my_rank, rank_dirs[UP],rank_dirs[DOWN],rank_dirs[LEFT], rank_dirs[RIGHT]);
   my_mstart = coord[0]*(m-2)/4;
-  my_mstop = (coord[0]+1)*(n-2)/4;
+  my_mstop = (coord[0]+1)*(m-2)/4;
   my_m = my_mstop-my_mstart+2;
   my_nstart = coord[1]*(n-2)/3;
   my_nstop = (coord[1]+1)*(n-2)/3;
