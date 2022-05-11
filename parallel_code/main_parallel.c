@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
   MPI_Cart_coords(comm, my_rank, 2, coord);
   printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
 
-  MPI_Cart_shift(comm_cart, up, 0,  )
+  //MPI_Cart_shift(comm_cart, up, 0,  )
   MPI_Finalize();
   return 0;
   /*
