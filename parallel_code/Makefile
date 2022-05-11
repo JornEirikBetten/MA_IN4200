@@ -2,12 +2,12 @@ CC = mpicc
 CFLAGS = -O2
 LDFLAGS = -L../simple-jpeg/ -lsimplejpeg
 
-PROJ = main_parallel
+PROJ = main
 OBJS = main.o
 
 all: simple-jpeg $(PROJ)
 
-main_parallel: $(OBJS)
+main: $(OBJS)
 	$(CC) $(CFLAGS) $< functions.o -o $@ $(LDFLAGS)
 
 functions: $(functions.o)
