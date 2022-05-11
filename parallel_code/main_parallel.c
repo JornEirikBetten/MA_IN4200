@@ -75,8 +75,8 @@ int main(int argc, char *argv[])
   my_n = n/3;
   MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);
   if (my_rank == 5){
-        MPI_Cart_coords(comm, rank, 2, coord);
-        printf("Rank %d coordinates are %d %d\n", rank, coord[0], coord[1]);fflush(stdout);
+        MPI_Cart_coords(comm, my_rank, 2, coord);
+        printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
   }
   if(my_rank==0){
         coord[0]=3; coord[1]=1;
