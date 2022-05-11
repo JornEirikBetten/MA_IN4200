@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
   my_m = my_mstop-my_mstart+2;
   my_nstart = coord[1]*(n-2)/3;
   my_nstop = (coord[1]+1)*(n-2)/3;
-  my_n = my_ystop-my_ystart+2;
+  my_n = my_nstop-my_nstart+2;
   printf("P[%d]: m: start: %d, stop: %d, my_m: %d\n", my_rank, my_mstart, my_mstop, my_m);
   printf("P[%d]: n: start: %d, stop: %d, my_n: %d\n", my_rank, my_nstart, my_nstop, my_n);
   MPI_Finalize();
