@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   //int dest[4];
   MPI_Cart_shift(comm_cart, 0, 1, &rank_dirs[UP], &rank_dirs[DOWN]);
   MPI_Cart_shift(comm_cart, 1, 1, &rank_dirs[LEFT], &rank_dirs[RIGHT]);
-  printf("P[%d]: neighbors(u,d,l,r)=%d %d %d %d\n",my_rank,source[UP],source[DOWN],source[LEFT], source[RIGHT]);
+  printf("P[%d]: neighbors(u,d,l,r)=%d %d %d %d\n",my_rank, rank_dirs[UP],rank_dirs[DOWN],rank_dirs[LEFT], rank_dirs[RIGHT]);
   my_mstart = coord[0]*(m-2)/4;
   my_mstop = (coord[0]+1)*(n-2)/4;
   my_m = my_mstop-my_mstart+2;

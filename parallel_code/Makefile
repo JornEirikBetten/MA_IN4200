@@ -1,0 +1,32 @@
+CC = mpicc
+CFLAGS = -O2
+LDFLAGS = -L../simple-jpeg/ -lsimplejpeg
+
+PROJ = a.out
+OBJS = main.o
+
+all: simple-jpeg $(PROJ)
+
+main_parallel: $(OBJS)
+	$(CC) $(CFLAGS) $< functions.o -o $@ $(LDFLAGS)
+
+functions: $(functions.o)
+	$(CC) $(CFLAGS) $< -o
+
+simple-jpeg:
+	$(MAKE) -C ../simple-jpeg
+
+obj-clean:
+	$(RM) *.o
+
+exec-clean:
+	$(RM) $(PROJ)
+
+autosave-clean:
+	$(RM) *~
+
+clean:
+	$(MAKE) obj-clean
+	$(MAKE) exec-clean
+	$(MAKE) autosave-clean
+	$(MAKE) -C ../simple-jpeg clean
