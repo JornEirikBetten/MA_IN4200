@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
   printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
   int source[4];
   //int dest[4];
-  MPI_Cart_shift(cartcomm, 0, 1, &source[UP], &source[DOWN]);
-  MPI_Cart_shift(cartcomm, 1, 1, &source[LEFT], &source[RIGHT]);
+  MPI_Cart_shift(comm_cart, 0, 1, &source[UP], &source[DOWN]);
+  MPI_Cart_shift(comm_cart, 1, 1, &source[LEFT], &source[RIGHT]);
   printf("P[%d]: neighbors(u,d,l,r)=%d %d %d %d\n",my_rank,source[UP],source[DOWN],source[LEFT], source[RIGHT]);
   MPI_Finalize();
   return 0;
