@@ -19,13 +19,18 @@ typedef struct {
   int n; // horizontal direction
 }
 image;
+#DEFINE UP=0;
+#DEFINE DOWN=1;
+#DEFINE LEFT=2;
+#DEFINE RIGHT=3;
 
-//void allocate_image(image *u, int m, int n);
-//void deallocate_image(image *u);
-//void convert_jpeg_to_image(const unsigned char* image_chars, image *u);
-//void convert_image_to_jpeg(const image *u, unsigned char* image_chars);
-//void iso_diffusion_denoising_parallel(image *u, image *u_bar, float k, int iters);
-//void swap_images(image *u, image *u_bar, int m, int n);
+void allocate_image(image *u, int m, int n);
+void deallocate_image(image *u);
+void convert_jpeg_to_image(const unsigned char* image_chars, image *u);
+void convert_image_to_jpeg(const image *u, unsigned char* image_chars);
+void iso_diffusion_denoising_parallel(image *u, image *u_bar, float k, int iters);
+void swap_images(image *u, image *u_bar, int m, int n);
+
 /* declarations of functions import_JPEG_file and export_JPEG_file */
 int main(int argc, char *argv[])
 {
@@ -76,7 +81,8 @@ int main(int argc, char *argv[])
   dim[0] = 4; dim[1] = 3;
   period[0] = 0; period[1] = 0; /* Non periodic boundaries */
   reorder=0;
-  my_m = m/4;
+
+  my_m = m/4+1;
   my_n = n/3;
   int ndims = 2;
   MPI_Dims_create(num_procs, ndims, dim);
@@ -86,8 +92,11 @@ int main(int argc, char *argv[])
   MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm_cart);
   MPI_Cart_coords(comm_cart, my_rank, 2, coord);
   printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
-
-  //MPI_Cart_shift(comm_cart, up, 0,  )
+  int source[4];
+  //int dest[4];
+  MPI_Cart_shift(cartcomm, 0, 1, &source[UP], &source[DOWN]);
+  MPI_Cart_shift(cartcomm, 1, 1, &source[LEFT], &source[RIGHT]);
+  printf("P[%d]: neighbors(u,d,l,r)=%d %d %d %d\n",my_rank,source[UP],source[DOWN],source[LEFT], source[RIGHT]);
   MPI_Finalize();
   return 0;
   /*
