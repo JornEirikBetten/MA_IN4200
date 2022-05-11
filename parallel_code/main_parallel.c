@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     printf("PW[%d], CommSz[%d%]: PEdims = [%d x %d] \n",my_rank,size,dims[0],dims[1]);
   }
   MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm_cart);
-  MPI_Cart_coords(comm, my_rank, 2, coord);
+  MPI_Cart_coords(comm_cart, my_rank, 2, coord);
   printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
 
   //MPI_Cart_shift(comm_cart, up, 0,  )
