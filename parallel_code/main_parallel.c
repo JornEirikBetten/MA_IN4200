@@ -32,8 +32,12 @@ int main(int argc, char *argv[])
   int m, n, c, iters;
   int my_m, my_n, my_rank, num_procs;
   int coord[2], id, dim[2], period[2], reorder;
+  int up = 1;
+  int down = -1;
+  int left = -1;
+  int right = 1;
   float kappa;
-  MPI_Comm comm;
+  MPI_Comm comm_cart;
   image u, u_bar, whole_image;
   unsigned char *image_chars, *my_image_chars;
   char *input_jpeg_filename, *output_jpeg_filename;
@@ -46,6 +50,7 @@ int main(int argc, char *argv[])
     printf("Need five input arguments from command line.\n");
     printf("./prog kappa iters input_jpeg_filename output_jpeg_file\n");
     printf("Exiting program.\n");
+    MPI_Finalize();
     exit(0);
   }
   if (num_procs != 12) {
@@ -60,29 +65,28 @@ int main(int argc, char *argv[])
     input_jpeg_filename = argv[3];
     output_jpeg_filename = argv[4];
     /* reading image into 1D array */
-    //import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
+    import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
     /* allocating an image with 2D float array inside */
-    //allocate_image (&whole_image, m, n);
-    }
+    allocate_image (&whole_image, m, n);
+  }
   MPI_Bcast (&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast (&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
   /* 2D decomposition of the m x n pixels evenly among the MPI processes */
   /* Using twelve processes */
   dim[0] = 4; dim[1] = 3;
-  period[0] = 0; period[1] = 0;
+  period[0] = 0; period[1] = 0; /* Non periodic boundaries */
   reorder=0;
   my_m = m/4;
   my_n = n/3;
-  MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);
-  if (my_rank == 5){
-        MPI_Cart_coords(comm, my_rank, 2, coord);
-        printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
-  }
+  //MPI_Dims_create(num_procs, ndims, dims);
   if(my_rank==0){
-        coord[0]=3; coord[1]=1;
-        MPI_Cart_rank(comm, coord, &id);
-        printf("The processor at position (%d, %d) has rank %d\n", coord[0], coord[1], id);fflush(stdout);
+    printf("PW[%d], CommSz[%d%]: PEdims = [%d x %d] \n",my_rank,size,dims[0],dims[1]);
   }
+  MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm_cart);
+  MPI_Cart_coords(comm, my_rank, 2, coord);
+  printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
+
+  MPI_Cart_shift(comm_cart, up, 0,  )
   MPI_Finalize();
   return 0;
   /*
