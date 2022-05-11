@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
 {
   int m, n, c, iters;
   int my_m, my_n, my_rank, num_procs;
+  int my_mstart, my_mstop, my_nstart, my_nstop;
   int coord[2], id, dim[2], period[2], reorder;
   int up = 1;
   int down = -1;
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
     input_jpeg_filename = argv[3];
     output_jpeg_filename = argv[4];
     /* reading image into 1D array */
-    //import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
+    import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
     /* allocating an image with 2D float array inside */
     //allocate_image (&whole_image, m, n);
   }
@@ -82,8 +83,6 @@ int main(int argc, char *argv[])
   period[0] = 0; period[1] = 0; /* Non periodic boundaries */
   reorder=0;
 
-  my_m = m/4+1;
-  my_n = n/3;
   int ndims = 2;
   MPI_Dims_create(num_procs, ndims, dim);
   if(my_rank==0){
@@ -92,11 +91,19 @@ int main(int argc, char *argv[])
   MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm_cart);
   MPI_Cart_coords(comm_cart, my_rank, 2, coord);
   printf("Rank %d coordinates are %d %d\n", my_rank, coord[0], coord[1]);fflush(stdout);
-  int source[4];
+  int rank_dirs[4];
   //int dest[4];
-  MPI_Cart_shift(comm_cart, 0, 1, &source[UP], &source[DOWN]);
-  MPI_Cart_shift(comm_cart, 1, 1, &source[LEFT], &source[RIGHT]);
+  MPI_Cart_shift(comm_cart, 0, 1, &rank_dirs[UP], &rank_dirs[DOWN]);
+  MPI_Cart_shift(comm_cart, 1, 1, &rank_dirs[LEFT], &rank_dirs[RIGHT]);
   printf("P[%d]: neighbors(u,d,l,r)=%d %d %d %d\n",my_rank,source[UP],source[DOWN],source[LEFT], source[RIGHT]);
+  my_mstart = coord[0]*(m-2)/4;
+  my_mstop = (coord[0]+1)*(n-2)/4;
+  my_m = my_mstop-my_mstart+2;
+  my_nstart = coord[1]*(n-2)/3;
+  my_nstop = (coord[1]+1)*(n-2)/3;
+  my_n = my_ystop-my_ystart+2;
+  printf("P[%d]: m: start: %d, stop: %d, my_m: %d\n", my_rank, my_mstart, my_mstop, my_m);
+  printf("P[%d]: n: start: %d, stop: %d, my_n: %d\n", my_rank, my_nstart, my_nstop, my_n);
   MPI_Finalize();
   return 0;
   /*
