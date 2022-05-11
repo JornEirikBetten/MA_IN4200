@@ -19,10 +19,10 @@ typedef struct {
   int n; // horizontal direction
 }
 image;
-#DEFINE UP=0;
-#DEFINE DOWN=1;
-#DEFINE LEFT=2;
-#DEFINE RIGHT=3;
+#define UP=0;
+#define DOWN=1;
+#define LEFT=2;
+#define RIGHT=3;
 
 void allocate_image(image *u, int m, int n);
 void deallocate_image(image *u);
