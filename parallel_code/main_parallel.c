@@ -48,8 +48,7 @@ int main(int argc, char *argv[])
     exit(0);
   }
   if (num_procs != 12) {
-    printf("The program needs 12 processes to be initiated.
-            Number of inserted processes: %d.\n Exiting program.\n", num_procs);
+    printf("The program needs 12 processes to be initiated.Number of inserted processes: %d.\n Exiting program.\n", num_procs);
     exit(0);
   }
   /* ... */
