@@ -45,12 +45,12 @@ int main(int argc, char *argv[])
     printf("Need five input arguments from command line.\n");
     printf("./prog kappa iters input_jpeg_filename output_jpeg_file\n");
     printf("Exiting program.\n");
-    exit();
+    exit(0);
   }
   if (num_procs != 12) {
     printf("The program needs 12 processes to be initiated.
             Number of inserted processes: %d.\n Exiting program.\n", num_procs);
-    exit();
+    exit(0);
   }
   /* ... */
   if (my_rank==0) {
