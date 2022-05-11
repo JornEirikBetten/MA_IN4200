@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
     input_jpeg_filename = argv[3];
     output_jpeg_filename = argv[4];
     /* reading image into 1D array */
-    import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
+    //import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
     /* allocating an image with 2D float array inside */
-    allocate_image (&whole_image, m, n);
+    //allocate_image (&whole_image, m, n);
   }
   MPI_Bcast (&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast (&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
