@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   int my_m, my_n, my_rank, num_procs;
   int coord[2], id, dim[2], period[2], reorder;
   float kappa;
-  MPI_Comm comm; 
+  MPI_Comm comm;
   image u, u_bar, whole_image;
   unsigned char *image_chars, *my_image_chars;
   char *input_jpeg_filename, *output_jpeg_filename;
@@ -74,11 +74,11 @@ int main(int argc, char *argv[])
   my_m = m/4;
   my_n = n/3;
   MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);
-  if (rank == 5){
+  if (my_rank == 5){
         MPI_Cart_coords(comm, rank, 2, coord);
         printf("Rank %d coordinates are %d %d\n", rank, coord[0], coord[1]);fflush(stdout);
   }
-  if(rank==0){
+  if(my_rank==0){
         coord[0]=3; coord[1]=1;
         MPI_Cart_rank(comm, coord, &id);
         printf("The processor at position (%d, %d) has rank %d\n", coord[0], coord[1], id);fflush(stdout);
