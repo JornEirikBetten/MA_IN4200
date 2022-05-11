@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
   int my_m, my_n, my_rank, num_procs;
   int coord[2], id, dim[2], period[2], reorder;
   float kappa;
+  MPI_Comm comm; 
   image u, u_bar, whole_image;
   unsigned char *image_chars, *my_image_chars;
   char *input_jpeg_filename, *output_jpeg_filename;
