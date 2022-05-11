@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
   my_m = m/4;
   my_n = n/3;
   int ndims = 2;
-  MPI_Dims_create(num_procs, ndims, dims);
+  MPI_Dims_create(num_procs, ndims, dim);
   if(my_rank==0){
     printf("PW[%d], CommSz[%d%]: PEdims = [%d x %d] \n",my_rank,size,dims[0],dims[1]);
   }
