@@ -15,7 +15,7 @@ void export_JPEG_file (const char* filename, const unsigned char* image_chars,
 int main(int argc, char *argv[])
     {
     int m, n, c, iters;
-    int my_m, my_n, my_rank, start_point, num_procs;
+    int my_m, my_n, my_rank, num_procs;
     float kappa;
     image u, u_bar, whole_image;
     unsigned char *image_chars, *my_image_chars;
@@ -35,34 +35,36 @@ int main(int argc, char *argv[])
     }
     MPI_Bcast (&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast (&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    int *m_rows = malloc(num_procs*sizeof *m_rows);
+    int *m_array = malloc(num_procs*sizeof *m_array);
     //using for scattering and gathering. From excersice3 week10
     int *counts = malloc(num_procs*sizeof *counts);
     int *displs = malloc(num_procs*sizeof *displs);
 
 
-    int rows = m/num_procs;
+    int hor_slice = m/num_procs;
     int remainder = m%num_procs;
     displs[0] = 0;
 
     // Last remainder processes gets an extra row.
     for (int my_rank = 0; my_rank < num_procs-1; my_rank++) {
-        m_rows[my_rank] = rows + ((my_rank >= (num_procs - remainder)) ? 1:0);
-        counts[my_rank] = m_rows[my_rank]*n;
+        m_rows[my_rank] = hor_slice + ((my_rank >= (num_procs - remainder)) ? 1:0);
+        counts[my_rank] = m_array[my_rank]*n;
         displs[my_rank+1] = displs[my_rank] + counts[my_rank];
     }
-    m_rows[num_procs-1] = rows + ((num_procs-1) >= (num_procs - remainder) ? 1:0);
-    counts[num_procs-1] = m_rows[num_procs-1]*n;
+    m_rows[num_procs-1] = hor_slice + ((num_procs-1) >= (num_procs - remainder) ? 1:0);
+    counts[num_procs-1] = m_array[num_procs-1]*n;
 
-    my_m = m_rows[my_rank]+1;// all the processors need at least one more row as the ghost row
-    if (my_rank != 0 && my_rank != num_procs-1){// all the middle rankes need another ghost row. so two for middle ones and one for rank = 0 and last
-        my_m++;
+    if (my_rank==0 || my_rank == num_procs-1){
+      my_m = m_array[my_rank]+1;
+    }
+    else{
+      my_m = m_array[my_rank]+2;
     }
     my_n = n;
     allocate_image (&u, my_m, my_n);
     allocate_image (&u_bar, my_m, my_n);
     my_image_chars = malloc(my_m * my_n *sizeof(*my_image_chars));
-    if(my_rank == 0){// to scatter we have to make sure that only rank zero sends out from zero.
+    if(my_rank == 0){
         start_point = 0;
     }else{
         start_point = n;
@@ -78,14 +80,22 @@ int main(int argc, char *argv[])
                 0,
                 MPI_COMM_WORLD);
     convert_jpeg_to_image (my_image_chars, &u);
-    MPI_Barrier(MPI_COMM_WORLD); //make sure all arrays are filled before starting computation
+    MPI_Barrier(MPI_COMM_WORLD);
     iso_diffusion_denoising_parallel (&u, &u_bar, kappa, iters);
+    int start;
     if (my_rank == 0){ // only rank 0 starts from 0 because it does not have a upper ghost row. the rest start from one to skip the upper ghost row
-        start_point = 0;
+        start = 0;
     }else{
-        start_point = 1;
+        start = 1;
     }
-    MPI_Gatherv((&u)->image_data[start_point], m_rows[my_rank]*n, MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    MPI_Gatherv((&u)->image_data[start_point],
+                counts[my_rank], MPI_FLOAT,
+                (&whole_image)->image_data[0],
+                counts,
+                displs,
+                MPI_FLOAT,
+                0,
+                MPI_COMM_WORLD);
     if (my_rank==0) {
         convert_image_to_jpeg(&whole_image, image_chars);
         export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
