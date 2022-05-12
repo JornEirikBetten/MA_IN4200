@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
   /* process 0 receives from each process incoming values and */
   /* copy them into the designated region of struct whole_image */
   /* ... */
-  if (my_rank<0){
+  if (my_rank>0){
     start = 1;
   }
   else {
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
   }
   printf("Before gather..\n");
   MPI_Gatherv((&u)->image_data[start], m_array[my_rank]*n, MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
-  printf("After gather..\n"); 
+  printf("After gather..\n");
   if (my_rank==0) {
     convert_image_to_jpeg(&whole_image, image_chars);
     export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
