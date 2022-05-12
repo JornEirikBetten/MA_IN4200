@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
   int *m_array = malloc(num_procs*sizeof(int));
   int *counts = malloc(num_procs*sizeof(int));
   int *displs = malloc(num_procs*sizeof(int));
-  displs[0] = 0; 
+  displs[0] = 0;
   for (int i = 0; i < num_procs-1; i++) {
         m_array[i] = m_slice + ((i >= (num_procs - remainder_slice)) ? 1:0);
         counts[i] = m_array[i]*n;
@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
   /* need to wait for all processes to be done */
   MPI_Barrier(MPI_COMM_WORLD);
   iso_diffusion_denoising_parallel (&u, &u_bar, kappa, iters);
+  printf("After diffuson.. \n"); 
   /* each process sends its resulting content of u_bar to process 0 */
   /* process 0 receives from each process incoming values and */
   /* copy them into the designated region of struct whole_image */
