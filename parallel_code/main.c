@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
   /* Using twelve processes */
   int m_slice = m/num_procs;
   int remainder_slice = m%num_procs;
+  printf("Remainder slice: %d\n", remainder_slice); 
   int *m_array = malloc(num_procs*sizeof(int));
   int *counts = malloc(num_procs*sizeof(int));
   int *displs = malloc(num_procs*sizeof(int));
@@ -118,7 +119,7 @@ int main(int argc, char *argv[])
     start = 0;
   }
   printf("P[%d]: count[%d]= %d", my_rank, my_rank, n+counts[my_rank]);
-  printf("Count: mxn = %d", m*n); 
+  printf("Count: mxn = %d", m*n);
   printf("Before scatter...\n");
 
   MPI_Scatterv(image_chars,                           // Sending image chars from root process
