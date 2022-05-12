@@ -135,6 +135,7 @@ int main(int argc, char *argv[])
                0,
                MPI_COMM_WORLD);
   printf("After scatter...\n");
+  MPI_Barrer(MPI_COMM_WORLD); 
   convert_jpeg_to_image (my_image_chars, &u);
   printf("After convert to image..\n");
   /* need to wait for all processes to be done */
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
   }
   int s = 0;
   printf("Before gather..\n");
-  printf("%d\n", u.image_data[counts[my_rank]-1]);
+  printf("%d\n", u.image_data[counts[my_rank]]);
   MPI_Gatherv((&u)->image_data[start], counts[my_rank], MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   printf("After gather..\n");
   if (my_rank==0) {
