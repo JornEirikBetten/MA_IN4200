@@ -1,13 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
-
-typedef struct {
-  float** image_data;
-  int m; // vertical direction
-  int n; // horizontal direction
-}
-image;
+#include "functions.h"
 
 void allocate_image(image *u, int m, int n);
 void deallocate_image(image *u);
