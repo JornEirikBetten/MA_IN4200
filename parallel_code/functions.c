@@ -17,8 +17,9 @@ void swap_images(image *u, image *u_bar, int m, int n);
 
 void allocate_image(image *u, int m, int n) {
   (*u).image_data = (float**)malloc(m*sizeof(float*));
+  (*u).image_data[0] = malloc(m*n*sizeof(float));
   for (int i=0; i<m; i++) {
-    (*u).image_data[i] = (float*)malloc(n*sizeof(float));
+    (*u).image_data[i] = &((*u).image_data[0][n*i]);
   }
   (*u).m = m;
   (*u).n = n;
@@ -49,13 +50,56 @@ void convert_image_to_jpeg(const image *u, unsigned char* image_chars) {
   }
 }
 
+void update_halo_rows(image *u) {
+  int my_rank, num_procs;
+  MPI_Status status;
+  MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+  int m = (*u).m; int n = (*u).n;
+  /* Sending from odd processes first (to avoid deadlock) */
+  if (my_rank % 2){
+    MPI_Send((*u).image_data[1][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD);
+    if (my_rank < num_procs-1){
+      MPI_Send((*u).image_data[m-2][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD);
+    }
+    MPI_Recv((*u).image_data[0][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD, &status);
+    if (my_rank<num_procs-1) {
+      MPI_Recv((*u).image_data[m-1][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD, &status);
+    }
+  }
+  /* Sending from even processes */
+  else {
+    if (my_rank>0){
+      MPI_Recv((*u).image_data[0][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD, &status);
+    }
+    if (my_rank<num_procs-1){
+      MPI_Recv((*u).image_data[m-1][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD, &status);
+    }
+    if (my_rank>0){
+      MPI_Send((*u).image_data[1][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD);
+    }
+    if (my_rank<num_procs-1){
+      MPI_Send((*u).image_data[m-1][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD);
+    }
+  }
+}
+
 void iso_diffusion_denoising_parallel(image *u, image *u_bar, float kappa, int iters) {
   int i, j;
   int m = (*u).m;
   int n = (*u).n;
   float cross_sum, four_times_val, difference;
-  for (j=0; j<n; j++) {
+  int my_rank, num_procs;
+  MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+  update_halo_rows(u);
+  /* the boundaries which we will not calculate on, but will use
+  in the calculation of the inner points. These will be first and last
+  rows of the picture, and the first and last columns of the picture. */
+  if (my_rank==0) {
     (*u_bar).image_data[0][j] = (*u).image_data[0][j];
+  }
+  if (my_rank==num_procs-1) {
     (*u_bar).image_data[m-1][j] = (*u).image_data[m-1][j];
   }
   for (i=0; i<m; i++) {
@@ -76,6 +120,7 @@ void iso_diffusion_denoising_parallel(image *u, image *u_bar, float kappa, int i
     if (iteration<(iters-1)) {
       swap_images(u, u_bar, m, n);
     }
+    update_halo_rows(u); 
   }
 }
 
