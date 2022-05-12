@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
   /* Using twelve processes */
   int m_slice = m/num_procs;
   int remainder_slice = m%num_procs;
-  printf("Remainder slice: %d\n", remainder_slice); 
+  printf("Remainder slice: %d\n", remainder_slice);
   int *m_array = malloc(num_procs*sizeof(int));
   int *counts = malloc(num_procs*sizeof(int));
   int *displs = malloc(num_procs*sizeof(int));
@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
   }
   my_n = n;
   printf("P[%d]: my_m: %d, my_n: %d \n", my_rank, my_m, my_n);
+  printf("P[%d]: m_array[]= %d\n", m_array[my_rank]); 
 
   allocate_image (&u, my_m, my_n);
   allocate_image (&u_bar, my_m, my_n);
