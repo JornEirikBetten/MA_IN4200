@@ -28,8 +28,8 @@ void deallocate_image(image *u) {
 void convert_jpeg_to_image(const unsigned char* image_chars, image *u) {
   for (int i=0; i<(*u).m; i++) {
     for (int j=0; j<(*u).n; j++) {
-      u->image_data[i][j] = image_chars[i*(*u).n + j];
-      printf("%d", u->image_data[i][j]); 
+      u->image_data[i][j] = (float)image_chars[i*(*u).n + j];
+      printf("%d", u->image_data[i][j]);
     }
   }
 }
