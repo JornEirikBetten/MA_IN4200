@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
                 counts,
                 displs,
                 MPI_UNSIGNED_CHAR,
-                &my_image_chars[start_point],                 // Recieve buff is the same as sendbuf here.
+                &my_image_chars[start],                 // Recieve buff is the same as sendbuf here.
                 counts[my_rank],
                 MPI_UNSIGNED_CHAR,
                 0,
