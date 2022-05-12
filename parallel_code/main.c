@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
   int s = 0;
   for (int i=0; i<my_m; i++) {
     for (int j=0; j<my_n; j++) {
-      printf("ubar[i][j]=%d\n", u_bar.image_data[i][j]); 
+      printf("u[i][j]=%d\n", u.image_data[i][j]); 
     }
   }
   printf("Before gather..\n");
