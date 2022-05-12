@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
   }
   m_array[num_procs-1] = m_slice + ((num_procs-1) >= (num_procs - remainder_slice) ? 1:0);
   counts[num_procs-1] = m_array[num_procs-1]*n;
-  printf("counts[%d] = %d\n", num_procs-1, counts[num_procs-1]); 
+  printf("counts[%d] = %d\n", num_procs-1, counts[num_procs-1]);
   /* Allocating array for saving of number of rows in slices */
   if (my_rank==0 || my_rank==num_procs-1) {
     my_m = m_array[my_rank] + 1;
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
   else{
     start = 0;
   }
-  printf("P[%d]: count[%d]= %d ", my_rank, my_rank, n+counts[my_rank]);
+  printf("P[%d]: count[%d]= %d ", my_rank, my_rank, counts[my_rank]);
   printf("Count: mxn = %d\n", m*n);
   printf("Before scatter...\n");
 
