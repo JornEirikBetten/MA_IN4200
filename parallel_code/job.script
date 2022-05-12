@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH
+#SBATCH
+#SBATCH
+#SBATCH
+#SBATCH
+--account=ec54
+--job-name=simple
+--nodes=1 --ntasks-per-node=12
+--mem-per-cpu=2G
+--time=0-00:05:00
+set -o errexit # Exit the script on any error
+set -o nounset # Treat any unset variables as an error
+module --quiet purge # Reset the modules to the system default
+srun ./a.out 0.2 100 mona_lisa_noisy.jpg mona_lisa_smooth.jpg
