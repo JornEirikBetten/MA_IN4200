@@ -155,8 +155,14 @@ int main(int argc, char *argv[])
   else {
     start = 0;
   }
+  int s = 0;
+  for (int i=0; i<my_m; i++) {
+    for (int j=0; j<my_n; j++) {
+      printf("ubar[i][j]=%d\n", u_bar->image_data[i][j]); 
+    }
+  }
   printf("Before gather..\n");
-  MPI_Gatherv((&u_bar)->image_data[start], counts[my_rank]-1000, MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv((&u_bar)->image_data[start], counts[my_rank], MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   printf("After gather..\n");
   if (my_rank==0) {
     convert_image_to_jpeg(&whole_image, image_chars);
