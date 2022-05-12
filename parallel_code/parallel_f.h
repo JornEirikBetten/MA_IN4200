@@ -1,9 +1,13 @@
 #ifndef PARALLEL_F_H
 #define PARALLEL_F_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <mpi.h>
+
+typedef struct {
+  float** image_data;
+  int m; // vertical direction
+  int n; // horizontal direction
+}
+image;
 
 void allocate_image(image *u, int m, int n);
 void deallocate_image(image *u);
