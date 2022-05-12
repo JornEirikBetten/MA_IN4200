@@ -43,13 +43,13 @@ int main(int argc, char *argv[])
 
     int rows = m/num_procs;
     int remainder = m%num_procs;
-    Sdispls[0] = 0;
+    displs[0] = 0;
 
     // Last remainder processes gets an extra row.
     for (int my_rank = 0; my_rank < num_procs-1; my_rank++) {
         m_rows[my_rank] = rows + ((my_rank >= (num_procs - remainder)) ? 1:0);
         counts[my_rank] = m_rows[my_rank]*n;
-        Sdispls[my_rank+1] = Sdispls[my_rank] + counts[my_rank];
+        displs[my_rank+1] = displs[my_rank] + counts[my_rank];
     }
     m_rows[num_procs-1] = rows + ((num_procs-1) >= (num_procs - remainder) ? 1:0);
     counts[num_procs-1] = m_rows[num_procs-1]*n;
