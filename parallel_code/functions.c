@@ -17,10 +17,10 @@ void iso_diffusion_denoising_parallel(image *u, image *u_bar, float k, int iters
 void swap_images(image *u, image *u_bar, int m, int n);
 
 void allocate_image(image *u, int m, int n) {
-  (*u).image_data = (float**)malloc(m*sizeof(float*));
-  (*u).image_data[0] = malloc(m*n*sizeof(float));
+  u->image_data = (float**)malloc(m*sizeof(float*));
+  u->image_data[0] = malloc(m*n*sizeof(float));
   for (int i=0; i<m; i++) {
-    (*u).image_data[i] = &((*u).image_data[0][n*i]);
+    u->image_data[i] = &(u->image_data[0][n*i]);
   }
   (*u).m = m;
   (*u).n = n;
