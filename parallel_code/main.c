@@ -19,10 +19,6 @@ typedef struct {
   int n; // horizontal direction
 }
 image;
-#define UP    0
-#define DOWN  1
-#define LEFT  2
-#define RIGHT 3
 
 void allocate_image(image *u, int m, int n);
 void deallocate_image(image *u);
@@ -156,11 +152,6 @@ int main(int argc, char *argv[])
     start = 0;
   }
   int s = 0;
-  for (int i=0; i<my_m; i++) {
-    for (int j=0; j<my_n; j++) {
-      printf("u[i][j]=%d\n", u.image_data[i][j]); 
-    }
-  }
   printf("Before gather..\n");
   MPI_Gatherv((&u_bar)->image_data[start], counts[my_rank], MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   printf("After gather..\n");
