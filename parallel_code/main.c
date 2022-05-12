@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
                0,
                MPI_COMM_WORLD);
   printf("After scatter...\n");
-  MPI_Barrer(MPI_COMM_WORLD); 
+  MPI_Barrier(MPI_COMM_WORLD); 
   convert_jpeg_to_image (my_image_chars, &u);
   printf("After convert to image..\n");
   /* need to wait for all processes to be done */
