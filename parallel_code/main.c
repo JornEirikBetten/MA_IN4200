@@ -16,6 +16,7 @@ void export_JPEG_file (const char* filename, const unsigned char* image_chars,
 int main(int argc, char *argv[])
 {
   int m, n, c, iters;
+  int my_m, my_n; 
   float kappa;
   MPI_Comm comm_cart;
   MPI_Status status;
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
     MPI_Finalize();
     exit(0);
   }
-  
+
   /* ... */
   if (my_rank==0) {
     /* reading command line arguments */
