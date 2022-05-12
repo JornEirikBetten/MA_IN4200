@@ -89,7 +89,9 @@ int main(int argc, char *argv[])
 
   for (int i = 0; i < num_procs-1; i++) {
         m_array[i] = m_slice + ((i >= (num_procs - remainder_slice)) ? 1:0);
+        printf("m_array[%d] = %d", i, m_array[i]);
         counts[i] = m_array[i]*n;
+        printf("counts[%d]= %d", i, counts[i]); 
         displs[i+1] = displs[i] + counts[i];
   }
   m_array[num_procs-1] = m_slice + ((num_procs-1) >= (num_procs - remainder_slice) ? 1:0);
@@ -103,7 +105,7 @@ int main(int argc, char *argv[])
   }
   my_n = n;
   printf("P[%d]: my_m: %d, my_n: %d \n", my_rank, my_m, my_n);
-  printf("P[%d]: m_array[]= %d\n", m_array[my_rank]); 
+  printf("P[%d]: m_array[]= %d\n", m_array[my_rank]);
 
   allocate_image (&u, my_m, my_n);
   allocate_image (&u_bar, my_m, my_n);
