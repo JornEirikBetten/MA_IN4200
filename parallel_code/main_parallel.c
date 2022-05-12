@@ -13,14 +13,6 @@ void export_JPEG_file (const char* filename, const unsigned char* image_chars,
                        int image_height, int image_width,
                        int num_components, int quality);
 
-
-void allocate_image(image *u, int m, int n);
-void deallocate_image(image *u);
-void convert_jpeg_to_image(const unsigned char* image_chars, image *u);
-void convert_image_to_jpeg(const image *u, unsigned char* image_chars);
-void iso_diffusion_denoising_parallel(image *u, image *u_bar, float k, int iters);
-void swap_images(image *u, image *u_bar, int m, int n);
-
 /* declarations of functions import_JPEG_file and export_JPEG_file */
 int main(int argc, char *argv[])
 {
