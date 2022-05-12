@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
   my_image_chars = malloc(my_m*my_n*sizeof(unsigned char));
   /* making sure scatter works fine */
   int start;
-  if(my_rank< 0){
+  if(my_rank>0){
     start = n;
   }
   else{
