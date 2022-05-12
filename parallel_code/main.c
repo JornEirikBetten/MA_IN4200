@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
   int *m_array = malloc(num_procs*sizeof(int));
   int *counts = malloc(num_procs*sizeof(int));
   int *displs = malloc(num_procs*sizeof(int));
-
+  displs[0] = 0; 
   for (int i = 0; i < num_procs-1; i++) {
         m_array[i] = m_slice + ((i >= (num_procs - remainder_slice)) ? 1:0);
         counts[i] = m_array[i]*n;
