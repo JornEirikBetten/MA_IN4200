@@ -101,6 +101,8 @@ int main(int argc, char *argv[])
     my_m = m_array[my_rank]+2;
   }
   my_n = n;
+  printf("P[%d]: my_m: %d, my_n: %d \n", my_rank, my_m, my_n); 
+
   allocate_image (&u, my_m, my_n);
   allocate_image (&u_bar, my_m, my_n);
   /* each process asks process 0 for a partitioned region */
