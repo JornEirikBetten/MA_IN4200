@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
   /* Slicing in the first dimension only */
   /* Using twelve processes */
   int m_slice = m/num_procs;
+  printf("m slice: %d \n", m_slice); 
   int remainder_slice = m%num_procs;
   printf("Remainder slice: %d\n", remainder_slice);
   int *m_array = malloc(num_procs*sizeof(int));
