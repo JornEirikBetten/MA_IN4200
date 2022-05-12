@@ -47,11 +47,11 @@ int main(int argc, char *argv[])
 
     // Last remainder processes gets an extra row.
     for (int my_rank = 0; my_rank < num_procs-1; my_rank++) {
-        m_rows[my_rank] = hor_slice + ((my_rank >= (num_procs - remainder)) ? 1:0);
+        m_array[my_rank] = hor_slice + ((my_rank >= (num_procs - remainder)) ? 1:0);
         counts[my_rank] = m_array[my_rank]*n;
         displs[my_rank+1] = displs[my_rank] + counts[my_rank];
     }
-    m_rows[num_procs-1] = hor_slice + ((num_procs-1) >= (num_procs - remainder) ? 1:0);
+    m_array[num_procs-1] = hor_slice + ((num_procs-1) >= (num_procs - remainder) ? 1:0);
     counts[num_procs-1] = m_array[num_procs-1]*n;
 
     if (my_rank==0 || my_rank == num_procs-1){
@@ -64,10 +64,11 @@ int main(int argc, char *argv[])
     allocate_image (&u, my_m, my_n);
     allocate_image (&u_bar, my_m, my_n);
     my_image_chars = malloc(my_m * my_n *sizeof(*my_image_chars));
+    int start;
     if(my_rank == 0){
-        start_point = 0;
+        start = 0;
     }else{
-        start_point = n;
+        start = n;
     }
 
     MPI_Scatterv(image_chars,                 // Sendbuff, matters only for root process.
@@ -82,13 +83,12 @@ int main(int argc, char *argv[])
     convert_jpeg_to_image (my_image_chars, &u);
     MPI_Barrier(MPI_COMM_WORLD);
     iso_diffusion_denoising_parallel (&u, &u_bar, kappa, iters);
-    int start;
     if (my_rank == 0){ // only rank 0 starts from 0 because it does not have a upper ghost row. the rest start from one to skip the upper ghost row
         start = 0;
     }else{
         start = 1;
     }
-    MPI_Gatherv((&u)->image_data[start_point],
+    MPI_Gatherv((&u)->image_data[start],
                 counts[my_rank], MPI_FLOAT,
                 (&whole_image)->image_data[0],
                 counts,
