@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <mpi.h>
 #include <stdlib.h>
-#include "parallel_f.h"
+#include "functions_parallel.h"
 
 void import_JPEG_file (const char* filename, unsigned char** image_chars,
                        int* image_height, int* image_width,
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     if (argc<5) {
       printf("Command to run: \n");
       printf("./prog.exe (float)kappa (int)iters filename1 filename2");
-      exit(0); 
+      exit(0);
     }
     if (my_rank==0) {
       kappa = atof(argv[1]);

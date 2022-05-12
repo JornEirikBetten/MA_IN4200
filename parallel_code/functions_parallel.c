@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions.h"
+#include "functions_parallel.h"
 #include <mpi.h>
 
 void allocate_image(image *u, int m, int n){
