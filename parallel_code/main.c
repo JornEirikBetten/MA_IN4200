@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
     /* reading image into 1D array */
     import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
     printf("M: %d, N: %d\n", m,n);
+    printf("MxN: %d\n", m*n); 
     /* allocating an image with 2D float array inside */
     allocate_image (&whole_image, m, n);
   }
@@ -81,7 +82,7 @@ int main(int argc, char *argv[])
   /* Slicing in the first dimension only */
   /* Using twelve processes */
   int m_slice = m/num_procs;
-  printf("m slice: %d \n", m_slice); 
+  printf("m slice: %d \n", m_slice);
   int remainder_slice = m%num_procs;
   printf("Remainder slice: %d\n", remainder_slice);
   int *m_array = malloc(num_procs*sizeof(int));
