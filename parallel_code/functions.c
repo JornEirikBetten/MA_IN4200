@@ -98,10 +98,14 @@ void iso_diffusion_denoising_parallel(image *u, image *u_bar, float kappa, int i
   in the calculation of the inner points. These will be first and last
   rows of the picture, and the first and last columns of the picture. */
   if (my_rank==0) {
-    (*u_bar).image_data[0][j] = (*u).image_data[0][j];
+    for (int j=0; j<n; j++){
+      (*u_bar).image_data[0][j] = (*u).image_data[0][j];
+    }
   }
   if (my_rank==num_procs-1) {
-    (*u_bar).image_data[m-1][j] = (*u).image_data[m-1][j];
+    for (int j=0; j<n; j++){
+      (*u_bar).image_data[m-1][j] = (*u).image_data[m-1][j];
+    }
   }
   for (i=0; i<m; i++) {
     (*u_bar).image_data[i][n-1] = (*u).image_data[i][n-1];
