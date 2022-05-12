@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <mpi.h>
 
 typedef struct {
   float** image_data;
@@ -120,7 +121,7 @@ void iso_diffusion_denoising_parallel(image *u, image *u_bar, float kappa, int i
     if (iteration<(iters-1)) {
       swap_images(u, u_bar, m, n);
     }
-    update_halo_rows(u); 
+    update_halo_rows(u);
   }
 }
 
