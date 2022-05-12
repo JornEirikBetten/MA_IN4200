@@ -117,6 +117,7 @@ int main(int argc, char *argv[])
   else{
     start = 0;
   }
+  printf("P[%d]: n+count[%d]= %d", my_rank, my_rank, n+counts[my_rank]);
   printf("Before scatter...\n");
 
   MPI_Scatterv(image_chars,                           // Sending image chars from root process
@@ -130,7 +131,7 @@ int main(int argc, char *argv[])
                MPI_COMM_WORLD);
   printf("After scatter...\n");
   convert_jpeg_to_image (my_image_chars, &u);
-  printf("After convert to image..\n"); 
+  printf("After convert to image..\n");
   /* need to wait for all processes to be done */
   MPI_Barrier(MPI_COMM_WORLD);
   iso_diffusion_denoising_parallel (&u, &u_bar, kappa, iters);
