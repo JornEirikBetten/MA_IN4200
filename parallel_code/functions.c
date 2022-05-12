@@ -59,28 +59,28 @@ void update_halo_rows(image *u) {
   int m = (*u).m; int n = (*u).n;
   /* Sending from odd processes first (to avoid deadlock) */
   if (my_rank % 2){
-    MPI_Send(&u->image_data[1][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD);
+    MPI_Send(&u->image_data[1], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD);
     if (my_rank < num_procs-1){
-      MPI_Send(&u->image_data[m-2][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD);
+      MPI_Send(&u->image_data[m-2], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD);
     }
-    MPI_Recv(&u->image_data[0][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&u->image_data[0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD, &status);
     if (my_rank<num_procs-1) {
-      MPI_Recv(&u->image_data[m-1][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD, &status);
+      MPI_Recv(&u->image_data[m-1], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD, &status);
     }
   }
   /* Sending from even processes */
   else {
     if (my_rank>0){
-      MPI_Recv(&u->image_data[0][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD, &status);
+      MPI_Recv(&u->image_data[0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD, &status);
     }
     if (my_rank<num_procs-1){
-      MPI_Recv(&u->image_data[m-1][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD, &status);
+      MPI_Recv(&u->image_data[m-1], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD, &status);
     }
     if (my_rank>0){
-      MPI_Send(&u->image_data[1][0], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD);
+      MPI_Send(&u->image_data[1], n, MPI_FLOAT, my_rank-1, 0, MPI_COMM_WORLD);
     }
     if (my_rank<num_procs-1){
-      MPI_Send(&u->image_data[m-1][0], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD);
+      MPI_Send(&u->image_data[m-1], n, MPI_FLOAT, my_rank+1, 0, MPI_COMM_WORLD);
     }
   }
 }
