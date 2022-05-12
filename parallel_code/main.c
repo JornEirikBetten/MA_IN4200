@@ -16,13 +16,6 @@ void export_JPEG_file (const char* filename, const unsigned char* image_chars,
 int main(int argc, char *argv[])
 {
   int m, n, c, iters;
-  int my_m, my_n, my_rank, num_procs;
-  int my_mstart, my_mstop, my_nstart, my_nstop;
-  int coord[2], id, dim[2], period[2], reorder;
-  int up = 1;
-  int down = -1;
-  int left = -1;
-  int right = 1;
   float kappa;
   MPI_Comm comm_cart;
   MPI_Status status;
