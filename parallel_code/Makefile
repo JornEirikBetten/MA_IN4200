@@ -3,12 +3,12 @@ CFLAGS = -O2
 LDFLAGS = -L../simple-jpeg/ -lsimplejpeg
 
 PROJ = parallel_main
-OBJS = parallel_main.o parallel_f.o
+OBJS = parallel_main.o functions_parallel.o
 
 all: simple-jpeg $(PROJ)
 
 parallel_main: $(OBJS)
-	$(CC) $(CFLAGS) $< parallel_f.c -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $< functions_parallel.c -o $@ $(LDFLAGS)
 
 simple-jpeg:
 	$(MAKE) -C ../simple-jpeg
