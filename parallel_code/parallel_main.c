@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     }else{
         start_point = 1;
     }
-    MPI_Gatherv((&u)->image_data[start_point], m_rows[my_rank]*n, MPI_FLOAT, (&whole_image)->image_data[0], counts, Sdispls, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    MPI_Gatherv((&u)->image_data[start_point], m_rows[my_rank]*n, MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
     if (my_rank==0) {
         convert_image_to_jpeg(&whole_image, image_chars);
         export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
