@@ -29,43 +29,25 @@ int main(int argc, char *argv[])
     exit(0);
   }
   else {
-    printf("Arg 1 as string: %s", argv[1]);
     double argument = atof(argv[1]);
     kappa = (float) argument;
-    printf("Arg 1 as float: %f", kappa);
     iters = atoi(argv[2]);
     input_jpeg_filename = argv[3];
     output_jpeg_filename = argv[4];
   }
   import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
-  printf("%d\n", m);
-  printf("%d\n", n);
+  printf("Dimensions of image: (%d, %d)\n", m, n);
   printf("kappa: %f\n", kappa);
+  printf("Number of iters: %d \n", iters); 
 
 
   allocate_image(&u, m, n);
   allocate_image(&u_bar, m, n);
   convert_jpeg_to_image(image_chars, &u);
-  /*
-  for (int i=0; i<m; i++) {
-    printf("\n");
-    for (int j=0; j<n; j++) {
-      printf("%.1f ", u.image_data[i][j]);
-    }
-  }
-  */
-  printf("Kappa just before the function: %f\n", kappa);
+
+
   iso_diffusion_denoising(&u, &u_bar, kappa, iters);
-  printf("Kappa after function: %f\n", kappa);
   convert_image_to_jpeg(&u_bar, image_chars);
-  /*
-  for (int i=0; i<m; i++) {
-    printf("\n");
-    for (int j=0; j<n; j++) {
-      printf("%.1f ", u_bar.image_data[i][j]);
-    }
-  }
-  */
 
   export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
 

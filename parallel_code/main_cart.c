@@ -5,6 +5,7 @@
 #include <mpi.h>
 
 /* A try at virtual topology */
+/* Did not work out */
 
 void import_JPEG_file (const char* filename, unsigned char** image_chars,
                        int* image_height, int* image_width,
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
       MPI_Recv(&nstart, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &status);
       float** temp = (float**)malloc(msize*sizeof(float*));
       for (int i=0; i<msize; i++) {
-        *temp[i] = (float*)malloc(nsize*sizeof(float)); 
+        *temp[i] = (float*)malloc(nsize*sizeof(float));
       }
       MPI_Recv(&temp, msize*nsize, MPI_FLOAT, i, 0, MPI_COMM_WORLD, &status);
 

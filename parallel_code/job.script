@@ -11,4 +11,4 @@ module --quiet purge # Reset the modules to the system default
 module load OpenMPI/3.1.4-GCC-8.3.0
 module list
 
-srun ./main
+srun ./parallel_main
