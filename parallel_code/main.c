@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
   MPI_Comm_size (MPI_COMM_WORLD, &num_procs);
   /* read from command line: kappa, iters, input_jpeg_filename, output_jpeg_file
   name */
+  /*
   if (argc<5) {
     printf("Need five input arguments from command line.\n");
     printf("./prog kappa iters input_jpeg_filename output_jpeg_file\n");
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
     MPI_Finalize();
     exit(0);
   }
+  */
   /* ... */
   if (my_rank==0) {
     /* reading command line arguments */
