@@ -12,4 +12,5 @@
 set -o errexit # Exit the script on any error
 set -o nounset # Treat any unset variables as an error
 module --quiet purge # Reset the modules to the system default
+module load OpenMPI/3.1.4-GCC-8.3.0
 srun ./main
