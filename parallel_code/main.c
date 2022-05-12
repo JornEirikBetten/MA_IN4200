@@ -90,9 +90,9 @@ int main(int argc, char *argv[])
         m_array[i] = m_slice + ((i >= (num_procs - remainder_slice)) ? 1:0);
         counts[i] = m_array[i]*n;
         displs[i+1] = displs[i] + counts[i];
-    }
-    m_array[num_procs-1] = m_slice + ((num_procs-1) >= (num_procs - remainder_slice) ? 1:0);
-    counts[num_procs-1] = m_array[num_procs-1]*n;
+  }
+  m_array[num_procs-1] = m_slice + ((num_procs-1) >= (num_procs - remainder_slice) ? 1:0);
+  counts[num_procs-1] = m_array[num_procs-1]*n;
   /* Allocating array for saving of number of rows in slices */
   if (my_rank==0 && my_rank==num_procs-1) {
     my_m = m_array[my_rank] + 1;
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     my_m = m_array[my_rank]+2;
   }
   my_n = n;
-  printf("P[%d]: my_m: %d, my_n: %d \n", my_rank, my_m, my_n); 
+  printf("P[%d]: my_m: %d, my_n: %d \n", my_rank, my_m, my_n);
 
   allocate_image (&u, my_m, my_n);
   allocate_image (&u_bar, my_m, my_n);
