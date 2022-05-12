@@ -12,8 +12,8 @@ void allocate_image(image *u, int m, int n) {
   for (int i=0; i<m; i++) {
     u->image_data[i] = &(u->image_data[0][n*i]);
   }
-  (*u).m = m;
-  (*u).n = n;
+  u-> m = m;
+  u->n = n;
 
 }
 
