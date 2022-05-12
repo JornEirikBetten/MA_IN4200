@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     /* reading image into 1D array */
     import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
     printf("M: %d, N: %d\n", m,n);
-    printf("MxN: %d\n", m*n); 
+    printf("MxN: %d\n", m*n);
     /* allocating an image with 2D float array inside */
     allocate_image (&whole_image, m, n);
   }
@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
   }
   m_array[num_procs-1] = m_slice + ((num_procs-1) >= (num_procs - remainder_slice) ? 1:0);
   counts[num_procs-1] = m_array[num_procs-1]*n;
+  printf("counts[%d] = %d\n", num_procs-1, counts[num_procs-1]); 
   /* Allocating array for saving of number of rows in slices */
   if (my_rank==0 || my_rank==num_procs-1) {
     my_m = m_array[my_rank] + 1;
