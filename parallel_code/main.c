@@ -85,9 +85,9 @@ int main(int argc, char *argv[])
   printf("m slice: %d \n", m_slice);
   int remainder_slice = m%num_procs;
   printf("Remainder slice: %d\n", remainder_slice);
-  int *m_array = malloc(num_procs*sizeof(int));
-  int *counts = malloc(num_procs*sizeof(int));
-  int *displs = malloc(num_procs*sizeof(int));
+  int *m_array = malloc(num_procs*sizeof(*m_array));
+  int *counts = malloc(num_procs*sizeof(*counts));
+  int *displs = malloc(num_procs*sizeof(*displs));
   displs[0] = 0;
   for (int i = 0; i < num_procs-1; i++) {
         m_array[i] = m_slice + ((i >= (num_procs - remainder_slice)) ? 1:0);
