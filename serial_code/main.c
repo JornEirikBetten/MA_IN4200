@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <stdlib.h>
+#include "functions.h"
 
 /* The purpose of this program is to demonstrate how the functions
    'import_JPEG_file' & 'export_JPEG_file' can be used. */
@@ -11,23 +12,6 @@ void import_JPEG_file (const char* filename, unsigned char** image_chars,
 void export_JPEG_file (const char* filename, const unsigned char* image_chars,
                        int image_height, int image_width,
                        int num_components, int quality);
-
-
-typedef struct {
-  float** image_data;
-  int m; // vertical direction
-  int n; // horizontal direction
-}
-image;
-
-void allocate_image(image *u, int m, int n);
-void deallocate_image(image *u);
-void convert_jpeg_to_image(const unsigned char* image_chars, image *u);
-void convert_image_to_jpeg(const image *u, unsigned char* image_chars);
-void iso_diffusion_denoising(image *u, image *u_bar, float k, int iters);
-void swap_images(image *u, image *u_bar, int m, int n);
-
-
 
 int main(int argc, char *argv[])
 {

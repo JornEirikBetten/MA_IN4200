@@ -23,6 +23,11 @@ int main(int argc, char *argv[])
     MPI_Init (&argc, &argv);
     MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size (MPI_COMM_WORLD, &num_procs);
+    if (argc<5) {
+      printf("Command to run: \n");
+      printf("./prog.exe (float)kappa (int)iters filename1 filename2");
+      exit(0); 
+    }
     if (my_rank==0) {
       kappa = atof(argv[1]);
       iters = atoi(argv[2]);
@@ -36,7 +41,10 @@ int main(int argc, char *argv[])
     MPI_Bcast (&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast (&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     int *m_array = malloc(num_procs*sizeof *m_array);
-    //using for scattering and gathering. From excersice3 week10
+
+    /* arrays used for keeping track of displacements
+    and number of elements to send/receive in MPI_Gatherv and
+    MPI_Scatterv. */
     int *counts = malloc(num_procs*sizeof *counts);
     int *displs = malloc(num_procs*sizeof *displs);
 
@@ -45,7 +53,8 @@ int main(int argc, char *argv[])
     int remainder = m%num_procs;
     displs[0] = 0;
 
-    // Last remainder processes gets an extra row.
+    /* Processes with rank higher than num_procs-remainder
+       gain an additional row. */
     for (int my_rank = 0; my_rank < num_procs-1; my_rank++) {
         m_array[my_rank] = hor_slice + ((my_rank >= (num_procs - remainder)) ? 1:0);
         counts[my_rank] = m_array[my_rank]*n;
@@ -66,29 +75,33 @@ int main(int argc, char *argv[])
     my_image_chars = malloc(my_m * my_n *sizeof(*my_image_chars));
     int start;
     if(my_rank == 0){
+        /* the zeroth process start from the top
+           of the image array */
         start = 0;
     }else{
         start = n;
     }
-
-    MPI_Scatterv(image_chars,                 // Sendbuff, matters only for root process.
+    /* Sending designated chunks of image to
+       every */
+    MPI_Scatterv(image_chars,
                 counts,
                 displs,
                 MPI_UNSIGNED_CHAR,
-                &my_image_chars[start],                 // Recieve buff is the same as sendbuf here.
+                &my_image_chars[start],
                 counts[my_rank],
                 MPI_UNSIGNED_CHAR,
                 0,
                 MPI_COMM_WORLD);
     convert_jpeg_to_image (my_image_chars, &u);
+    /* Wait for all processes to have converted their part of the image */
     MPI_Barrier(MPI_COMM_WORLD);
     iso_diffusion_denoising_parallel (&u, &u_bar, kappa, iters);
-    if (my_rank == 0){ // only rank 0 starts from 0 because it does not have a upper ghost row. the rest start from one to skip the upper ghost row
-        start = 0;
+    if (my_rank == 0){
+        start = 0; //rank one has no neighbour to the "left"
     }else{
         start = 1;
     }
-    MPI_Gatherv((&u)->image_data[start],
+    MPI_Gatherv((&u_bar)->image_data[start],
                 counts[my_rank], MPI_FLOAT,
                 (&whole_image)->image_data[0],
                 counts,

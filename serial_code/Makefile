@@ -3,15 +3,12 @@ CFLAGS = -O2
 LDFLAGS = -L../simple-jpeg/ -lsimplejpeg
 
 PROJ = main
-OBJS = main.o
+OBJS = main.o functions.o
 
 all: simple-jpeg $(PROJ)
 
 main: $(OBJS)
-	$(CC) $(CFLAGS) $< functions.o -o $@ $(LDFLAGS)
-
-functions: $(functions.o)
-	$(CC) $(CFLAGS) $< -o
+	$(CC) $(CFLAGS) $< functions.c -o $@ $(LDFLAGS)
 
 simple-jpeg:
 	$(MAKE) -C ../simple-jpeg

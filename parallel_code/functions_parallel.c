@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "parallel_f.h"
+#include "functions.h"
 #include <mpi.h>
 
 void allocate_image(image *u, int m, int n){
@@ -19,7 +19,7 @@ void deallocate_image(image *u){
   free(u->image_data);
 
 }
-// nothing has to change in the convert because we are giving the function the correct boundries
+
 void convert_jpeg_to_image(const unsigned char* image_chars, image *u){
   int m = u->m;
   int n = u->n;
@@ -83,37 +83,46 @@ void halos_update(image *u){
 
 void iso_diffusion_denoising_parallel(image *u, image *u_bar, float kappa, int iters){
   int my_rank, num_procs;
-  // getting my_rank and num_procs locally for this function
   MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
   MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
   halos_update(u);
   int m = u->m;
   int n = u->n;
-  // fixing the left and right boundries. That would be column number zero and n-1 of each row.
-  if (my_rank==0){ // for processor rank zero and the last one the actual boundry of the picture has to be fixed.
+  float cross_sum, four_times_val, difference;
+  /* Minor change in boundaries. j = 0 and j=n-1 needs to be
+  set for all. Only the first and last row needs to be set. */
+  if (my_rank==0){
     for (int j = 1; j< n-1; j++){
       u_bar->image_data[0][j] = u->image_data[0][j];
     }
   }else if(my_rank == num_procs-1){
     for (int j = 1; j < n-1; j++){
-      u_bar->image_data[u->m-1][j] = u->image_data[u->m-1][j];
+      u_bar->image_data[m-1][j] = u->image_data[m-1][j];
     }
   }
-  // In the serial code we filled the whole upper and lower neighbour then the left and right neighbour from 1 to m-2. But here we filled the upper and down neighbour from 1 to n-2 then fill the first and last point using the left and right loop.
   for (int i = 0; i < m ; i++){
       u_bar->image_data[i][0] = u->image_data[i][0];
       u_bar->image_data[i][n-1] = u->image_data[i][n-1];
   }
   float **temp;
-  for(int k=0; k<iters; k++){ // start of the interation for noise removing function
+  /* Executing diffusion iters times */
+  for(int iteration=0; iteration<iters; iteration++){
     for (int i=1; i < m-1; i++){
       for (int j=1; j < n-1; j++){
-        u_bar->image_data[i][j] = u->image_data[i][j] + kappa * (u->image_data[i-1][j]+u->image_data[i][j-1]-4*u->image_data[i][j]+u->image_data[i][j+1]+u->image_data[i+1][j]);
+        cross_sum = u->image_data[i-1][j] + u->image_data[i][j-1] + u->image_data[i+1][j] + u->image_data[i][j+1];
+        four_times_val = 4*u->image_data[i][j];
+        difference = cross_sum - four_times_val;
+
+        u_bar->image_data[i][j] = u->image_data[i][j] + kappa*difference;
       }
     }
-    temp = u_bar->image_data;
-    u_bar->image_data = u->image_data;
-    u->image_data = temp;
+    /* Swapping u and u_bar between each
+       execution except the last. */
+    if (iteration<(iters-1)){
+      temp = u_bar->image_data;
+      u_bar->image_data = u->image_data;
+      u->image_data = temp;
+    }
     halos_update(u);
   }
 
