@@ -89,9 +89,9 @@ int main(int argc, char *argv[])
 
   for (int i = 0; i < num_procs-1; i++) {
         m_array[i] = m_slice + ((i >= (num_procs - remainder_slice)) ? 1:0);
-        printf("m_array[%d] = %d", i, m_array[i]);
+        printf("m_array[%d] = %d\n", i, m_array[i]);
         counts[i] = m_array[i]*n;
-        printf("counts[%d]= %d", i, counts[i]); 
+        printf("counts[%d]= %d\n", i, counts[i]); 
         displs[i+1] = displs[i] + counts[i];
   }
   m_array[num_procs-1] = m_slice + ((num_procs-1) >= (num_procs - remainder_slice) ? 1:0);
