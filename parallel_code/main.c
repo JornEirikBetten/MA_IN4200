@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
   }
   int s = 0;
   printf("Before gather..\n");
-  printf("%d", u.image_data[600000]); 
+  printf("%d", u.image_data[counts[my_rank]-1]); 
   MPI_Gatherv((&u_bar)->image_data[start], counts[my_rank], MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   printf("After gather..\n");
   if (my_rank==0) {
