@@ -153,8 +153,8 @@ int main(int argc, char *argv[])
   }
   int s = 0;
   printf("Before gather..\n");
-  printf("%d\n", u.image_data[n+1]); 
-  MPI_Gatherv((&u_bar)->image_data[start], counts[my_rank], MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  printf("%d\n", u.image_data[n+1]);
+  MPI_Gatherv((&u)->image_data[start], counts[my_rank], MPI_FLOAT, (&whole_image)->image_data[0], counts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
   printf("After gather..\n");
   if (my_rank==0) {
     convert_image_to_jpeg(&whole_image, image_chars);
