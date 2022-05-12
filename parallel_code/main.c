@@ -120,8 +120,8 @@ int main(int argc, char *argv[])
   else{
     start = 0;
   }
-  printf("P[%d]: count[%d]= %d", my_rank, my_rank, n+counts[my_rank]);
-  printf("Count: mxn = %d", m*n);
+  printf("P[%d]: count[%d]= %d ", my_rank, my_rank, n+counts[my_rank]);
+  printf("Count: mxn = %d\n", m*n);
   printf("Before scatter...\n");
 
   MPI_Scatterv(image_chars,                           // Sending image chars from root process
