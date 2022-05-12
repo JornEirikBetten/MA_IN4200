@@ -23,26 +23,22 @@ int main(int argc, char *argv[])
     MPI_Init (&argc, &argv);
     MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size (MPI_COMM_WORLD, &num_procs);
-    kappa = atof(argv[1]);
-    iters = atoi(argv[2]);
-    input_jpeg_filename = argv[3];
-    output_jpeg_filename = argv[4];
-    // char *input_jpeg_filename = "mona_lisa_noisy.jpg";
-    // char *output_jpeg_filename = "mona_lisa_parallel.jpg";
-    // kappa = 0.2;
-    // iters = 100;
     if (my_rank==0) {
-        import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
-        allocate_image (&whole_image, m, n);
+      kappa = atof(argv[1]);
+      iters = atoi(argv[2]);
+      input_jpeg_filename = argv[3];
+      output_jpeg_filename = argv[4];
+      import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
+      allocate_image (&whole_image, m, n);
     }else{
-        allocate_image(&whole_image, 0, 0);
+      allocate_image(&whole_image, 0, 0);
     }
     MPI_Bcast (&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast (&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     int *m_rows = malloc(num_procs*sizeof *m_rows);
     //using for scattering and gathering. From excersice3 week10
-    int *sendcounts = malloc(num_procs*sizeof *sendcounts);
-    int *Sdispls = malloc(num_procs*sizeof *Sdispls);
+    int *counts = malloc(num_procs*sizeof *counts);
+    int *displs = malloc(num_procs*sizeof *displs);
 
 
     int rows = m/num_procs;
@@ -52,11 +48,11 @@ int main(int argc, char *argv[])
     // Last remainder processes gets an extra row.
     for (int my_rank = 0; my_rank < num_procs-1; my_rank++) {
         m_rows[my_rank] = rows + ((my_rank >= (num_procs - remainder)) ? 1:0);
-        sendcounts[my_rank] = m_rows[my_rank]*n;
-        Sdispls[my_rank+1] = Sdispls[my_rank] + sendcounts[my_rank];
+        counts[my_rank] = m_rows[my_rank]*n;
+        Sdispls[my_rank+1] = Sdispls[my_rank] + counts[my_rank];
     }
     m_rows[num_procs-1] = rows + ((num_procs-1) >= (num_procs - remainder) ? 1:0);
-    sendcounts[num_procs-1] = m_rows[num_procs-1]*n;
+    counts[num_procs-1] = m_rows[num_procs-1]*n;
 
     my_m = m_rows[my_rank]+1;// all the processors need at least one more row as the ghost row
     if (my_rank != 0 && my_rank != num_procs-1){// all the middle rankes need another ghost row. so two for middle ones and one for rank = 0 and last
@@ -73,11 +69,11 @@ int main(int argc, char *argv[])
     }
 
     MPI_Scatterv(image_chars,                 // Sendbuff, matters only for root process.
-                sendcounts,
-                Sdispls,
+                counts,
+                displs,
                 MPI_UNSIGNED_CHAR,
                 &my_image_chars[start_point],                 // Recieve buff is the same as sendbuf here.
-                sendcounts[my_rank],
+                counts[my_rank],
                 MPI_UNSIGNED_CHAR,
                 0,
                 MPI_COMM_WORLD);
@@ -89,7 +85,7 @@ int main(int argc, char *argv[])
     }else{
         start_point = 1;
     }
-    MPI_Gatherv((&u)->image_data[start_point], m_rows[my_rank]*n, MPI_FLOAT, (&whole_image)->image_data[0], sendcounts, Sdispls, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    MPI_Gatherv((&u)->image_data[start_point], m_rows[my_rank]*n, MPI_FLOAT, (&whole_image)->image_data[0], counts, Sdispls, MPI_FLOAT, 0, MPI_COMM_WORLD);
     if (my_rank==0) {
         convert_image_to_jpeg(&whole_image, image_chars);
         export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
