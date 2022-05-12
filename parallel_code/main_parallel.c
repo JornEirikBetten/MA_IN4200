@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+#include "functions.h"
 
 
 
@@ -12,17 +13,6 @@ void export_JPEG_file (const char* filename, const unsigned char* image_chars,
                        int image_height, int image_width,
                        int num_components, int quality);
 
-
-typedef struct {
-  float** image_data;
-  int m; // vertical direction
-  int n; // horizontal direction
-}
-image;
-#define UP    0
-#define DOWN  1
-#define LEFT  2
-#define RIGHT 3
 
 void allocate_image(image *u, int m, int n);
 void deallocate_image(image *u);

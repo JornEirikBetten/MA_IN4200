@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
-
+#include "functions.h"
 
 
 void import_JPEG_file (const char* filename, unsigned char** image_chars,
@@ -11,21 +11,6 @@ void import_JPEG_file (const char* filename, unsigned char** image_chars,
 void export_JPEG_file (const char* filename, const unsigned char* image_chars,
                        int image_height, int image_width,
                        int num_components, int quality);
-
-
-typedef struct {
-  float** image_data;
-  int m; // vertical direction
-  int n; // horizontal direction
-}
-image;
-
-void allocate_image(image *u, int m, int n);
-void deallocate_image(image *u);
-void convert_jpeg_to_image(const unsigned char* image_chars, image *u);
-void convert_image_to_jpeg(const image *u, unsigned char* image_chars);
-void iso_diffusion_denoising_parallel(image *u, image *u_bar, float k, int iters);
-void swap_images(image *u, image *u_bar, int m, int n);
 
 /* declarations of functions import_JPEG_file and export_JPEG_file */
 int main(int argc, char *argv[])
@@ -135,7 +120,7 @@ int main(int argc, char *argv[])
                0,
                MPI_COMM_WORLD);
   printf("After scatter...\n");
-  MPI_Barrier(MPI_COMM_WORLD); 
+  MPI_Barrier(MPI_COMM_WORLD);
   convert_jpeg_to_image (my_image_chars, &u);
   printf("After convert to image..\n");
   /* need to wait for all processes to be done */
