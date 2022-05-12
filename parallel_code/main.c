@@ -117,6 +117,7 @@ int main(int argc, char *argv[])
   else{
     start = 0;
   }
+  printf("Before scatter...\n"); 
 
   MPI_Scatterv(image_chars,                           // Sending image chars from root process
                counts,
